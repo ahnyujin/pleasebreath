@@ -1,0 +1,205 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    <title>숨좀쉬자</title>
+    <script type="text/javascript" src="http://code.jquery.com/jquery-1.8.1.min.js"></script>
+    <script>
+        $(document).ready(function() {
+            $("#siteMapBtn").toggle(
+                function() {
+                    $("#B").css({ left: 200 })
+                },
+                function() {
+                    $("#B").css({ left: 0 })
+                }
+            )
+            $("#circle1").click(function() {
+                var txt = $("#cirtext").text()
+                if (txt == "ON") {
+                    $("#cirtext").text("OFF")
+                    alert("System ON")
+                    var xmlHttp = new XMLHttpRequest();
+                    xmlHttp.open( "GET", "/aiSolution_Control/ON", true);
+                    xmlHttp.send( null );
+                } else {
+                    $("#cirtext").text("ON")
+                    alert("System OFF")
+                    var xmlHttp = new XMLHttpRequest();
+                    xmlHttp.open( "GET", "/aiSolution_Control/OFF", true );
+                    xmlHttp.send( null );
+                }
+            })
+        })
+
+        function btnClick(x) {
+            x.classList.toggle("change")
+        }
+
+        function myFunction() {
+            var input, filter, ul, li, a, i
+            input = document.getElementById("mySearch")
+            filter = input.value.toUpperCase()
+            ul = document.getElementById("myMenu")
+            li = ul.getElementsByTagName("li")
+            for (i = 0; i < li.length; i++) {
+                a = li[i].getElementsByTagName("a")[0]
+                if (a.innerHTML.toUpperCase().indexOf(filter) > -1) {
+                    li[i].style.display = ""
+                } else {
+                    li[i].style.display = "none"
+                }
+            }
+        }
+
+        function getTemp() {
+            $.ajax({
+                type: 'GET',
+                url : "/insertdb/whatstatus",
+                async: true,
+                success : function (data) {
+                    let status = JSON.parse(data);
+                    let temp_Outer = status.temp_Outer;
+                    let temp_Inner = status.temp_Inner;
+                    let humid_Outer = status.humid_Outer;
+                    let humid_Inner = status.humid_Inner;
+                    let pm10_Outer = status.pm10_Outer;
+                    let pm10_Inner = status.pm10_Inner;
+                    let pm25_Outer = status.pm25_Outer;
+                    let pm25_Inner = status.pm25_Inner;
+                    let voc_Outer = status.voc_Outer;
+                    let voc_Inner = status.voc_Inner;
+
+                    document.getElementById('temp_Outer').innerHTML= '온도 : ' + temp_Outer + "℃";
+                    document.getElementById('temp_Inner').innerHTML= '온도 : ' + temp_Inner + "℃";
+                    document.getElementById('humid_Outer').innerHTML= '습도 : ' + humid_Outer + "%";
+                    document.getElementById('humid_Inner').innerHTML= '습도 : ' + humid_Inner + "%";
+                    document.getElementById('pm10_Outer').innerHTML= 'pm10 : ' + pm10_Outer;
+                    document.getElementById('pm10_Inner').innerHTML= 'pm10 : ' + pm10_Inner;
+                    document.getElementById('pm25_Outer').innerHTML= 'pm2.5 : ' + pm25_Outer;
+                    document.getElementById('pm25_Inner').innerHTML= 'pm2.5 : ' + pm25_Inner;
+                    document.getElementById('voc_Outer').innerHTML= 'VOC : ' + voc_Outer;
+                    document.getElementById('voc_Inner').innerHTML= 'VOC : ' + voc_Inner;
+
+                },
+                error:function(request,status,error){
+                    alert(status + " " + error);
+                }
+            });
+            setInterval(function() {
+                $.ajax({
+                    type: 'GET',
+                    url : "/main/whatstatus",
+                    async: true,
+                    success : function (data) {
+                        let status = JSON.parse(data);
+                        let temp_Outer = status.temp_Outer;
+                        let temp_Inner = status.temp_Inner;
+                        let humid_Outer = status.humid_Outer;
+                        let humid_Inner = status.humid_Inner;
+                        let pm10_Outer = status.pm10_Outer;
+                        let pm10_Inner = status.pm10_Inner;
+                        let pm25_Outer = status.pm25_Outer;
+                        let pm25_Inner = status.pm25_Inner;
+                        let voc_Outer = status.voc_Outer;
+                        let voc_Inner = status.voc_Inner;
+
+
+                        document.getElementById('temp_Outer').innerHTML= '온도 : ' + temp_Outer + "℃";
+                        document.getElementById('temp_Inner').innerHTML= '온도 : ' + temp_Inner + "℃";
+                        document.getElementById('humid_Outer').innerHTML= '습도 : ' + humid_Outer + "%";
+                        document.getElementById('humid_Inner').innerHTML= '습도 : ' + humid_Inner + "%";
+                        document.getElementById('pm10_Outer').innerHTML= 'pm10 : ' + pm10_Outer;
+                        document.getElementById('pm10_Inner').innerHTML= 'pm10 : ' + pm10_Inner;
+                        document.getElementById('pm25_Outer').innerHTML= 'pm2.5 : ' + pm25_Outer;
+                        document.getElementById('pm25_Inner').innerHTML= 'pm2.5 : ' + pm25_Inner;
+                        document.getElementById('voc_Outer').innerHTML= 'VOC : ' + voc_Outer;
+                        document.getElementById('voc_Inner').innerHTML= 'VOC : ' + voc_Inner;
+                    },
+                    error:function(request,status,error){
+                        alert(status + " " + error);
+                    }
+                });
+            }, 3000);
+        }
+
+        getTemp();
+
+    </script>
+    <link rel="stylesheet" href="stylesheets/main.css">
+</head>
+
+<body>
+<div class="head">
+    <div class="container" onclick="btnClick(this)" id="siteMapBtn">
+        <div class="bar1"></div>
+        <div class="bar2"></div>
+        <div class="bar3"></div>
+    </div>
+    <div class="subject">
+        <h1>메인 페이지</h1>
+    </div>
+    <div id="base" onclick="location.href='/'" style="cursor: pointer"></div>
+</div>
+<div id="A" class="left" style="background-color:#bbb;">
+    <h2>Menu</h2>
+    <input
+            type="text"
+            id="mySearch"
+            onkeyup="myFunction()"
+            placeholder="Search.."
+            title="Type in a category"
+    />
+    <ul id="myMenu">
+        <li><a href="/main">메인 페이지</a></li>
+        <li><a href="/detailair">상세 공기 상태</a></li>
+        <li><a href="/dataHistory">누적 데이터</a></li>
+        <li><a href="/remoteControl">리모컨 기능</a></li>
+        <li><a href="/modeControl">모드 설정</a></li>
+    </ul>
+</div>
+<div id="B">
+    <div id="upleft">
+        <div id="outerinfo">
+            <div id="temp_Outer">
+                온도 : 45℃
+            </div>
+            <div id="humid_Outer">
+                습도 : 80%
+            </div>
+            <div id = "pm10_Outer">
+                pm10 : ${ pm}
+            </div>
+            <div id = "pm25_Outer">
+                pm2.5 : Bad
+            </div>
+            <div id = "voc_Outer">
+                VOC : Bad
+            </div>
+        </div>
+    </div>
+        <div id="downright">
+            <div id="innerinfo">
+                <div id="temp_Inner">
+                    온도 : 45℃
+                </div>
+                <div id="humid_Inner">
+                    습도 : 80%
+                </div>
+                <div id = "pm10_Inner">
+                    pm10 : ${ pm}
+                </div>
+                <div id = "pm25_Inner">
+                    pm2.5 : Bad
+                </div>
+                <div id = "voc_Inner">
+                    VOC : Bad
+                </div>
+            </div>
+        <div id="circle1">
+            <p id="cirtext">ON</p>
+        </div>
+    </div>
+</div>
+</body>
+</html>
