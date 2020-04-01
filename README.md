@@ -1,5 +1,5 @@
 # pleasebreath
-for more details, please refer to these...
+please refer to these...
 
 webserver : https://github.com/ahnyujin/pleasebreath_webserver
 
